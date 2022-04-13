@@ -113,7 +113,7 @@ void Service::OnRWMsg(std::shared_ptr<SocketRWMsg> msg) {
             if(len > 0)
                 OnSocketData(fd, buff, len);
         } while(len == BUFFSIZE);
-        
+
         if(len <= 0 && errno != EAGAIN) {
             if(Sunnet::inst->GetConn(fd)) { // 防止多次释放
                 OnSocketClose(fd);
@@ -130,8 +130,17 @@ void Service::OnRWMsg(std::shared_ptr<SocketRWMsg> msg) {
 
 void Service::OnSocketData(int fd, const char* buff, int len) {
     std::cout << "OnSocketData " << fd << " buff: " << buff << std::endl;
+
+    /* sleep(10); // 在此sleep期间退出客户端连接，模拟RST
+    std::cout << "发送" << std::endl;
     if(len > 0)
         write(fd, buff, len);
+    sleep(2);
+    std::cout << "发送" << std::endl; */
+
+    // ECHO
+    // if(len > 0)
+    //     write(fd, buff, len);
 }
 
 void Service::OnSocketWritable(int fd) {
