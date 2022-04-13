@@ -6,6 +6,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <string.h>
 
 // 饿汉单例
 _Sunnet* Sunnet::inst = new _Sunnet();
@@ -224,7 +225,7 @@ int _Sunnet::Listen(uint32_t port, uint32_t serviceId) {
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
     int res = bind(listenFd, (struct sockaddr*)&addr, sizeof(addr));
     if(res == -1) {
-        std::cout << "bind error" << std::endl;
+        std::cout << "bind error: " << strerror(errno) << std::endl;
         return -1;
     }
 
