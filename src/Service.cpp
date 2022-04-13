@@ -109,11 +109,11 @@ void Service::OnRWMsg(std::shared_ptr<SocketRWMsg> msg) {
         char buff[BUFFSIZE];
         int len = 0;
         do {
-            len = read(fd, buff, len);
+            len = read(fd, buff, BUFFSIZE);
             if(len > 0)
                 OnSocketData(fd, buff, len);
         } while(len == BUFFSIZE);
-
+        
         if(len <= 0 && errno != EAGAIN) {
             if(Sunnet::inst->GetConn(fd)) { // 防止多次释放
                 OnSocketClose(fd);
@@ -126,6 +126,20 @@ void Service::OnRWMsg(std::shared_ptr<SocketRWMsg> msg) {
         if(Sunnet::inst->GetConn(fd)) // 如果在write以上的逻辑中关闭了连接或有其他错误，则导致无法写入，这里需要判断连接存在否再读取
             OnSocketWritable(fd);
     }
+}
+
+void Service::OnSocketData(int fd, const char* buff, int len) {
+    std::cout << "OnSocketData " << fd << " buff: " << buff << std::endl;
+    if(len > 0)
+        write(fd, buff, len);
+}
+
+void Service::OnSocketWritable(int fd) {
+    std::cout << "OnSocketWritable " << fd << std::endl;
+}
+
+void Service::OnSocketClose(int fd) {
+    std::cout << "OnSocketClose " << fd << std::endl;
 }
 
 // 退出服务时触发
