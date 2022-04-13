@@ -7,6 +7,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include <signal.h>
 
 // 饿汉单例
 _Sunnet* Sunnet::inst = new _Sunnet();
@@ -22,6 +23,8 @@ void _Sunnet::Start() {
     pthread_cond_init(&sleepCond, NULL);
 
     pthread_rwlock_init(&connsLock, NULL);
+
+    signal(SIGPIPE, SIG_IGN); // 忽略PIPE信号
 
     StartWorker();
     StartScoket();
