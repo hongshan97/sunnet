@@ -1,3 +1,3 @@
 # sunnet
 
-## 仿写skynet!?!
+## 仿写skynet
