@@ -131,16 +131,17 @@ void Service::OnRWMsg(std::shared_ptr<SocketRWMsg> msg) {
 void Service::OnSocketData(int fd, const char* buff, int len) {
     std::cout << "OnSocketData " << fd << " buff: " << buff << std::endl;
 
-    /* sleep(10); // 在此sleep期间退出客户端连接，RST，产生PIPE信号
+    /*sleep(10); // 在此sleep期间退出客户端连接，RST，产生PIPE信号
     std::cout << "发送" << std::endl;
     if(len > 0)
         write(fd, buff, len);
     sleep(2);
-    std::cout << "发送" << std::endl; */
+    std::cout << "发送" << strerror(errno) << std::endl;*/ // cilent关闭后第一次write，ser端的socket还没销毁，所以write成功
 
     // ECHO
     // if(len > 0)
     //     write(fd, buff, len);
+    // std::cout << "发送" << strerror(errno) << std::endl; // client 关闭第二次write，收到Broken PIPE
 }
 
 void Service::OnSocketWritable(int fd) {
