@@ -97,6 +97,11 @@ void SocketWorker::OnAccept(std::shared_ptr<Conn> conn) {
         return;
     }
     fcntl(clientFd, F_SETFL, O_NONBLOCK); // 设为非阻塞IO
+
+    unsigned long buffSize = 4294967295;
+    if(setsockopt(clientFd, SOL_SOCKET, SO_SNDBUFFORCE, &buffSize, sizeof(buffSize)) < 0) 
+        std::cout << "OnAccept setsocketopt fail: " << strerror(errno) << std::endl;
+
     Sunnet::inst->AddConn(clientFd, conn->serviceId, Conn::TYPE::CLIENT);
 
     struct epoll_event ev;
