@@ -52,6 +52,8 @@ public:
     int Listen(uint32_t port, uint32_t serviceId);
     void CloseConn(uint32_t fd);
 
+    void ModifyEvent(int fd, bool epollOut);
+
 private:
     int WORKER_NUM = 3; // 工作的worker数量
     std::vector<Worker*> workers; // worker
