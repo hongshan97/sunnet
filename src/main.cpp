@@ -30,7 +30,10 @@ void TestEcho() {
 
 int main() {
     Sunnet::inst->Start();
-    TestEcho();
+    
+    std::shared_ptr<std::string> maniSrvType = std::make_shared<std::string>("main"); // 默认服务逻辑从开启main服务开始
+    Sunnet::inst->NewService(maniSrvType);
+    
     Sunnet::inst->Wait();
 
     std::cout << "主线程return" << std::endl;

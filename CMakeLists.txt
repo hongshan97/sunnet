@@ -11,6 +11,17 @@ add_definitions(-std=c++11)
 # 指定生成目标文件
 add_executable(sunnet ${DIR_SRCS})
 
+
+########lua
+
+link_directories(${cmake_CURRENT_SOURCE_DIR}/3rd/lua-5.3.5/src)
+
+include_directories(./3rd/lua-5.3.5/src)
+target_link_libraries(sunnet liblua.a)
+target_link_libraries(sunnet dl)
+
+########pthread
+
 # 库文件 
 # find_package(Threads) 
 # target_link_libraries(sunnet ${cmake_THREAD_LIBS_INIT})
@@ -23,4 +34,4 @@ add_executable(sunnet ${DIR_SRCS})
 # add_library(sunnet${src})
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
-target_link_libraries(sunnet PUBLIC Threads::Threads)
+target_link_libraries(sunnet Threads::Threads)

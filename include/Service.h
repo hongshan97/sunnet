@@ -5,6 +5,11 @@
 #include <stdint-gcc.h>
 
 #include "Msg.h"
+extern "C" {
+    #include "lua.h"
+    #include "lauxlib.h"
+    #include "lualib.h"
+}
 
 class Service {
 public:
@@ -43,4 +48,6 @@ public:
 
 private:
     std::shared_ptr<BaseMsg> PopMsg();
+
+    lua_State* luaState;
 };
