@@ -50,9 +50,19 @@ void Service::OnInit() {
     std::string filename = "../service/" + *type + "/init.lua";
     int isok = luaL_dofile(luaState, filename.data());
     if(isok == 0)
-        std::cout << "service " << *type << " init run lua success" << std::endl;
+        std::cout << "call service " << *type << " init  success" << std::endl;
     else 
-        std::cout << "service init run lua fail" << lua_tostring(luaState, -1) << std::endl;
+        std::cout << "call service " << *type << " init  fail" << lua_tostring(luaState, -1) << std::endl;
+    
+    // 调用lua函数
+    lua_getglobal(luaState, "OnInit");
+    lua_pushinteger(luaState, id);
+    isok = lua_pcall(luaState, 1, 0, 0);
+    if(isok == 0)
+        std::cout << "call lua OnInit success" << std::endl;
+    else 
+        std::cout << "call lua OnInit fail" << lua_tostring(luaState, -1) << std::endl;
+    
 }
 
 // 收到消息后触发
@@ -165,6 +175,14 @@ void Service::OnSocketClose(int fd) {
 void Service::OnExit() {
     std::cout << '[' << id << ']' << " OnExit" << std::endl;
 
+    // 调用lua函数
+    lua_getglobal(luaState, "OnExit");
+    int isok = lua_pcall(luaState, 0, 0, 0);
+    if(isok == 0)
+        std::cout << "call lua OnExit success" << std::endl;
+    else 
+        std::cout << "call lua OnExit fail" << lua_tostring(luaState, -1) << std::endl;
+    
     // 关闭lua虚拟机
     lua_close(luaState);
 }
