@@ -1,5 +1,7 @@
 #include "Service.h"
 #include "Sunnet.h"
+#include "LuaAPI.h"
+
 #include <iostream>
 #include <unistd.h>
 #include <string.h>
@@ -46,6 +48,10 @@ void Service::OnInit() {
     // 新建lua虚拟机
     luaState = luaL_newstate();
     luaL_openlibs(luaState);
+
+    // 注册sunnet系统api到lua虚拟机
+    LuaAPI::Register(luaState);
+
     // 执行lua文件
     std::string filename = "../service/" + *type + "/init.lua";
     int isok = luaL_dofile(luaState, filename.data());
@@ -114,6 +120,14 @@ void Service::OnMsg(std::shared_ptr<BaseMsg> msg) {
 
 void Service::OnServiceMsg(std::shared_ptr<ServiceMsg> msg) {
     std::cout << "OnServiceMsg" << std::endl;
+
+    // 调用lua的OnServiceMsg
+    lua_getglobal(luaState, "OnServiceMsg");
+    lua_pushinteger(luaState, msg->source);
+    lua_pushlstring(luaState, msg->buff.get(), msg->size);
+    int isok = lua_pcall(luaState, 2, 0, 0);
+    if(isok != 0)
+        std::cout << "call lua OnServiceMsg fail" << lua_tostring(luaState, -1) << std::endl;
 }
 
 void Service::OnAcceptMsg(std::shared_ptr<SocketAcceptMsg> msg) {
