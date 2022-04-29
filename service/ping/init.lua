@@ -1,11 +1,12 @@
 local serviceId
 
 function OnInit(id)
+    serviceId = id
     print("[lua] ping OnInit id: " .. id)
 end
 
 function OnServiceMsg(source, buff)
-    print("[lua] ping OnServiceMsg id: " .. serviceId)
+    print("[lua] ping OnServiceMsg id: " .. serviceId .. "  " .. buff)
 
     if string.len(buff) > 10 then
         sunnet.KillService(serviceId)

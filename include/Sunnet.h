@@ -36,7 +36,7 @@ public:
         std::shared_ptr<ServiceMsg> msg = std::make_shared<ServiceMsg>();
         msg->type = BaseMsg::TYPE::SERVICE;
         msg->source = src;
-        msg->buff = std::shared_ptr<char>(buff);
+        msg->buff = std::shared_ptr<char[]>(buff);
         msg->size = len;
         return msg;
     }

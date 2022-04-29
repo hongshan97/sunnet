@@ -23,7 +23,7 @@ public:
 class ServiceMsg : public BaseMsg {
 public:
     uint32_t source; // 消息发送方
-    std::shared_ptr<char> buff; // 消息内容
+    std::shared_ptr<char[]> buff; // 消息内容
     size_t size; // 消息长度
 };
 

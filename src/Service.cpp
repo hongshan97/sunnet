@@ -56,18 +56,18 @@ void Service::OnInit() {
     std::string filename = "../service/" + *type + "/init.lua";
     int isok = luaL_dofile(luaState, filename.data());
     if(isok == 0)
-        std::cout << "call service " << *type << " init  success" << std::endl;
+        std::cout << "run service " << *type << " init  success" << std::endl;
     else 
-        std::cout << "call service " << *type << " init  fail" << lua_tostring(luaState, -1) << std::endl;
+        std::cout << "run service " << *type << " init  fail" << lua_tostring(luaState, -1) << std::endl;
     
     // 调用lua函数
     lua_getglobal(luaState, "OnInit");
     lua_pushinteger(luaState, id);
     isok = lua_pcall(luaState, 1, 0, 0);
     if(isok == 0)
-        std::cout << "call lua OnInit success" << std::endl;
+        std::cout << "call service " << *type << " init  success" << std::endl;
     else 
-        std::cout << "call lua OnInit fail" << lua_tostring(luaState, -1) << std::endl;
+        std::cout << "call service " << *type << " init  fail" << lua_tostring(luaState, -1) << std::endl;
     
 }
 

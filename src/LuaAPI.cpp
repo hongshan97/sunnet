@@ -72,7 +72,8 @@ int LuaAPI::Send(lua_State* luaState) {
     const char* buff = lua_tolstring(luaState, 3, &len);
     
     std::shared_ptr<ServiceMsg> msg = std::make_shared<ServiceMsg>();
-    msg->buff = std::make_shared<char>(*(new char[len]));
+
+    msg->buff = std::shared_ptr<char[]>(new char[len]);
     memcpy(msg->buff.get(), buff, len);
     msg->source = srcId;
     msg->size = len;
