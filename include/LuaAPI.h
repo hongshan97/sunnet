@@ -13,6 +13,6 @@ public:
     static int Send(lua_State* luaState);
     
     static int Listen(lua_State* luaState);
-    static int ClostConn(lua_State* luaState);
+    static int CloseConn(lua_State* luaState);
     static int Write(lua_State* luaState);
 };

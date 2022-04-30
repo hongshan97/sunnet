@@ -14,9 +14,9 @@ void LuaAPI::Register(lua_State* luaState) {
         {"NewService", NewService},
         {"KillService", KillService},
         {"Send", Send},
-        // {"Listen", Listen},
-        // {"ClostConn", ClostConn},
-        // {"Write", Write},
+        {"Listen", Listen},
+        {"CloseConn", CloseConn},
+        {"Write", Write},
         {NULL, NULL}
     };
 
@@ -82,5 +82,55 @@ int LuaAPI::Send(lua_State* luaState) {
     Sunnet::inst->Send(toId, msg);
 
     std::cout << "Send success" << std::endl;
+    return 0;
+}
+
+int LuaAPI::Write(lua_State* luaState) {
+    int num = lua_gettop(luaState);
+    if(lua_isinteger(luaState, 1) == 0 || lua_isstring(luaState, 2) == 0 || num != 2) {
+        std::cout << "Write arg error" << std::endl;
+        return 0;
+    }
+    const int fd = lua_tointeger(luaState, 1);
+    size_t len = 0;
+    const char* buff = lua_tolstring(luaState, 2, &len);
+
+std::cout << buff << std::endl;
+    int r = write(fd, buff, len); // 注意这里没有处理多余数据，若有多余，则要lua层根据返回值再做write
+    lua_pushinteger(luaState, r);
+    return 1;
+}
+
+int LuaAPI::Listen(lua_State* luaState) {
+    int num = lua_gettop(luaState);
+    if(lua_isinteger(luaState, 1) == 0 || lua_isinteger(luaState, 2) == 0 || num != 2) {
+        std::cout << "Listen arg error" << std::endl;
+        lua_pushinteger(luaState, -1); // 给lua报错
+        return 1;
+    }
+    const int port = lua_tointeger(luaState, 1);
+    const int srvId = lua_tointeger(luaState, 2);
+
+    int listenFd = Sunnet::inst->Listen(port, srvId);
+    if(listenFd < 0) {
+        std::cout << "Bind or Listen error" << std::endl;
+        lua_pushinteger(luaState, -1); // 给lua报错
+        return 1;
+    }
+
+    lua_pushinteger(luaState, listenFd);
+    return 1;
+}
+
+int LuaAPI::CloseConn(lua_State* luaState) {
+    int num = lua_gettop(luaState);
+    if(lua_isinteger(luaState, 1) || num != 1) {
+        std::cout << "CloseConn arg error" << std::endl;
+        return 0;
+    }
+
+    const int fd = lua_tointeger(luaState, 1);
+
+    Sunnet::inst->CloseConn(fd);
     return 0;
 }

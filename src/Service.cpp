@@ -132,6 +132,16 @@ void Service::OnServiceMsg(std::shared_ptr<ServiceMsg> msg) {
 
 void Service::OnAcceptMsg(std::shared_ptr<SocketAcceptMsg> msg) {
     std::cout << "OnAcceptMsg" << std::endl;
+
+    lua_getglobal(luaState, "OnAcceptMsg");
+    lua_pushinteger(luaState, msg->listenFd);
+    lua_pushinteger(luaState, msg->clientFd);
+    int isok = lua_pcall(luaState, 2, 0, 0);
+    if(isok == 0)
+        std::cout << "call lua OnAcceptMsg success" << std::endl;
+    else 
+        std::cout << "call lua OnAcceptMsg failed: " << lua_tostring(luaState, -1) << std::endl;
+
 }
 
 void Service::OnRWMsg(std::shared_ptr<SocketRWMsg> msg) {
@@ -175,6 +185,15 @@ void Service::OnSocketData(int fd, const char* buff, int len) {
     // if(len > 0)
     //     write(fd, buff, len);
     // std::cout << "发送" << strerror(errno) << std::endl; // client 关闭第二次write，收到Broken PIPE
+
+    lua_getglobal(luaState, "OnSocketData");
+    lua_pushinteger(luaState, fd);
+    lua_pushlstring(luaState, buff, len);
+    int isok = lua_pcall(luaState, 2, 0, 0);
+    if(isok == 0)
+        std::cout << "call lua OnSocketData success" << std::endl;
+    else 
+        std::cout << "call lua OnSocketData failed: " << lua_tostring(luaState, -1) << std::endl;
 }
 
 void Service::OnSocketWritable(int fd) {
